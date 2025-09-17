@@ -71,7 +71,7 @@ set autoindent
 set showmatch
 set showmode
 set shiftwidth=2
-set tabstop=8
+set tabstop=2
 set expandtab
 set smarttab
 
