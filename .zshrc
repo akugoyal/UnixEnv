@@ -1,14 +1,33 @@
-# --- Auto-backup zshrc on reload -------------------------------------
+# --- Auto-backup zshrc on reload (+ optional GitHub sync) --------------------
 backup_dir="$HOME/Desktop/Backups"
-max_backups=10   # <-- change this number to keep more or fewer backups
+max_backups=10   # number of backups to keep
+repo_dir="$HOME/Desktop/UnixEnv"   # must be a git repo tracking origin main
+
 mkdir -p "$backup_dir"
 
-# Create a timestamped backup
-cp "$HOME/.zshrc" "$backup_dir/.zshrc_backup_$(date +%Y-%m-%d_%H-%M-%S)"
+# Create a timestamped backup every time .zshrc is (re)loaded
+ts="$(date +%Y-%m-%d_%H-%M-%S)"
+cp "$HOME/.zshrc" "$backup_dir/.zshrc_backup_${ts}"
 
 # Keep only the $max_backups newest backups, delete older ones
 ls -t "$backup_dir"/.zshrc_backup_* 2>/dev/null | tail -n +$((max_backups+1)) | xargs -r rm --
-# ---------------------------------------------------------------------
+
+# Optional GitHub sync
+if [[ -d "$repo_dir/.git" ]]; then
+  read -q "REPLY?Sync updated .zshrc to GitHub (UnixEnv)? [y/N] " && echo
+  if [[ "$REPLY" == [yY] ]]; then
+    cp "$HOME/.zshrc" "$repo_dir/.zshrc"
+    (
+      cd "$repo_dir" || exit 1
+      git add .zshrc
+      echo -n "Commit message: "
+      IFS= read -r msg
+      [[ -z "$msg" ]] && msg="Update .zshrc ($(date))"
+      git commit -m "$msg" && git push origin main
+    ) && echo "🚀 Synced to GitHub" || echo "⚠️ Git sync failed."
+  fi
+fi
+# ----------------------------------------------------------------------------
 
 # --- Set up prompt formatting ----------------------------------------
 setopt prompt_subst
@@ -29,6 +48,7 @@ zstyle ':completion:*:*:git-checkout:*' tag-order 'heads' 'tags'
 
 # --- PATH ------------------------------------------------------------
 export PATH="/usr/local/bin:$PATH"
+export PATH="/opt/homebrew/bin:$PATH"
 # ---------------------------------------------------------------------
 
 # --- Aliases ---------------------------------------------------------
@@ -37,6 +57,8 @@ alias purduerm="cd ~/Desktop/Purdue/RoboMasters/"
 alias python="python3"
 alias pip="pip3"
 alias reload-zsh="source ~/.zshrc && echo 'zshrc reloaded'"
+alias part="cd ~/Desktop/Purdue/PART"
+alias matlab="/Applications/MATLAB_R2024a.app/bin/matlab"
 # ---------------------------------------------------------------------
 
 # --- ENGR13300 auto-venv setup ---------------------------------------------
@@ -87,5 +109,51 @@ _engr_auto_venv() {
 add-zsh-hook chpwd _engr_auto_venv
 # Also run once on shell start so a session opened inside ENGR_ROOT behaves
 _engr_auto_venv
+# ---------------------------------------------------------------------------
+
+# --- VIP auto-venv setup -----------------------------------------------------
+
+# 1) Set your project root and venv path
+export VIP_ROOT="$HOME/Desktop/Purdue/VIP"
+export VIP_VENV="$VIP_ROOT"           # e.g. "$VIP_ROOT/venv" if you used `venv`
+
+# 2) Command: `vip` -> cd to the folder and (optionally) activate venv
+vip() {
+  cd "$VIP_ROOT" || return
+  if [[ "$VIRTUAL_ENV" != "$VIP_VENV" && -d "$VIP_VENV/bin" ]]; then
+    read -q "REPLY?Activate VIP venv now? [y/N] " && echo
+    [[ "$REPLY" == [yY] ]] && source "$VIP_VENV/bin/activate"
+  fi
+}
+
+# 3) Auto-prompt on entering/leaving the project tree
+autoload -Uz add-zsh-hook
+
+_vip_in_tree() {
+  [[ "$PWD" == "$VIP_ROOT" || "$PWD" == "$VIP_ROOT"/* ]]
+}
+
+_vip_auto_venv() {
+  if _vip_in_tree; then
+    if [[ "$VIRTUAL_ENV" != "$VIP_VENV" ]]; then
+      if [[ -d "$VIP_VENV/bin" ]]; then
+        read -q "REPLY?Activate VIP venv? [y/N] " && echo
+        [[ "$REPLY" == [yY] ]] && source "$VIP_VENV/bin/activate"
+      else
+        echo "⚠️  VIP venv not found at: $VIP_VENV  (create with: python3 -m venv \"$VIP_VENV\")"
+      fi
+    fi
+  else
+    if [[ "$VIRTUAL_ENV" == "$VIP_VENV" ]]; then
+      if whence -w deactivate >/dev/null 2>&1; then
+        read -q "REPLY?Deactivate VIP venv? [y/N] " && echo
+        [[ "$REPLY" == [yY] ]] && deactivate
+      fi
+    fi
+  fi
+}
+
+add-zsh-hook chpwd _vip_auto_venv
+_vip_auto_venv
 # ---------------------------------------------------------------------------
 
