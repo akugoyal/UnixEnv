@@ -1,30 +1,43 @@
-# --- Auto-backup zshrc on reload (+ optional GitHub sync) --------------------
+# --- Auto-backup zshrc on reload (+ optional GitHub sync on change) ----------
 backup_dir="$HOME/Desktop/Backups"
-max_backups=10   # number of backups to keep
-repo_dir="$HOME/Desktop/UnixEnv"   # must be a git repo tracking origin main
+max_backups=10
+repo_dir="$HOME/Desktop/UnixEnv"
+hash_file="$backup_dir/.zshrc_last_hash"
 
 mkdir -p "$backup_dir"
 
-# Create a timestamped backup every time .zshrc is (re)loaded
+# Current file hash
+current_hash=$(shasum -a 256 "$HOME/.zshrc" | awk '{print $1}')
+
+# Last saved hash (if any)
+last_hash=""
+[[ -f "$hash_file" ]] && last_hash=$(cat "$hash_file")
+
+# Always make a backup on reload
 ts="$(date +%Y-%m-%d_%H-%M-%S)"
 cp "$HOME/.zshrc" "$backup_dir/.zshrc_backup_${ts}"
 
-# Keep only the $max_backups newest backups, delete older ones
+# Keep only the $max_backups newest backups
 ls -t "$backup_dir"/.zshrc_backup_* 2>/dev/null | tail -n +$((max_backups+1)) | xargs -r rm --
 
-# Optional GitHub sync
-if [[ -d "$repo_dir/.git" ]]; then
-  read -q "REPLY?Sync updated .zshrc to GitHub (UnixEnv)? [y/N] " && echo
-  if [[ "$REPLY" == [yY] ]]; then
-    cp "$HOME/.zshrc" "$repo_dir/.zshrc"
-    (
-      cd "$repo_dir" || exit 1
-      git add .zshrc
-      echo -n "Commit message: "
-      IFS= read -r msg
-      [[ -z "$msg" ]] && msg="Update .zshrc ($(date))"
-      git commit -m "$msg" && git push origin main
-    ) && echo "🚀 Synced to GitHub" || echo "⚠️ Git sync failed."
+# Only prompt for GitHub sync if file changed since last reload
+if [[ "$current_hash" != "$last_hash" ]]; then
+  echo "$current_hash" > "$hash_file"   # update hash immediately
+  if [[ -d "$repo_dir/.git" ]]; then
+    read -q "REPLY?Sync updated .zshrc to GitHub (UnixEnv)? [y/N] " && echo
+    if [[ "$REPLY" == [yY] ]]; then
+      cp "$HOME/.zshrc" "$repo_dir/.zshrc"
+      (
+        cd "$repo_dir" || exit 1
+        git add .zshrc
+        echo -n "Commit message: "
+        IFS= read -r msg
+        [[ -z "$msg" ]] && msg="Update .zshrc ($(date))"
+        git commit -m "$msg" && git push origin main
+      ) && echo "🚀 Synced to GitHub" || echo "⚠️ Git sync failed."
+    else
+      echo "Skipped GitHub sync."
+    fi
   fi
 fi
 # ----------------------------------------------------------------------------
