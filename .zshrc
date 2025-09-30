@@ -72,6 +72,7 @@ alias pip="pip3"
 alias reload-zsh="source ~/.zshrc && echo 'zshrc reloaded'"
 alias part="cd ~/Desktop/Purdue/PART"
 alias matlab="/Applications/MATLAB_R2024a.app/bin/matlab"
+alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 # ---------------------------------------------------------------------
 
 # --- ENGR13300 auto-venv setup ---------------------------------------------
