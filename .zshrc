@@ -74,6 +74,7 @@ alias part="cd ~/Desktop/Purdue/PART"
 alias matlab="/Applications/MATLAB_R2024a.app/bin/matlab"
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 alias loq="ssh akugy@akul-win-laptop"
+alias rpi="ssh akul@akuls-rpi4b"
 # ---------------------------------------------------------------------
 
 # --- ENGR13300 auto-venv setup ---------------------------------------------
