@@ -1,3 +1,7 @@
+# --- Stop zshrc from emitting output on non-interactive sessions -------------
+[[ $- == *i* ]] || return
+#------------------------------------------------------------------------------
+
 # --- Auto-backup zshrc on reload (+ optional GitHub sync on change) ----------
 backup_dir="$HOME/Desktop/Backups"
 max_backups=10
