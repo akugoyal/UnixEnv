@@ -76,7 +76,6 @@ alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 alias loq="ssh akugy@akul-win-laptop"
 alias rpi="ssh akul@akuls-rpi4b"
 alias ieee="cd ~/Desktop/Purdue/IEEE"
-alias get_idf='. $HOME/esp/esp-idf/export.sh'
 # ---------------------------------------------------------------------
 
 # --- ENGR13300 auto-venv setup ---------------------------------------------
