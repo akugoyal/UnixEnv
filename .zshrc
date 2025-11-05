@@ -1,7 +1,7 @@
 # --- Auto-backup zshrc on reload (+ optional GitHub sync on change) ----------
 backup_dir="$HOME/Desktop/Backups"
 max_backups=10
-repo_dir="$HOME/Desktop/UnixEnv"
+repo_dir="$HOME/repos/UnixEnv"
 hash_file="$backup_dir/.zshrc_last_hash"
 
 mkdir -p "$backup_dir"
@@ -65,23 +65,23 @@ export PATH="/opt/homebrew/bin:$PATH"
 # ---------------------------------------------------------------------
 
 # --- Aliases ---------------------------------------------------------
-alias cs159="cd ~/Desktop/Purdue/Freshman_Year_2025_2026/CS15900/"
-alias purduerm="cd ~/Desktop/Purdue/RoboMasters/"
+alias cs159="cd ~/repos/PurdueRepos/Freshman_Year_2025_2026/CS15900/"
+alias purduerm="cd ~/repos/PurdueRepos/RoboMasters/"
 alias python="python3"
 alias pip="pip3"
 alias reload-zsh="source ~/.zshrc && echo 'zshrc reloaded'"
-alias part="cd ~/Desktop/Purdue/PART"
+alias part="cd ~/repos/PurdueRepos/PART"
 alias matlab="/Applications/MATLAB_R2024a.app/bin/matlab"
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 alias loq="ssh akugy@akul-win-laptop"
 alias rpi="ssh akul@akuls-rpi4b"
-alias ieee="cd ~/Desktop/Purdue/IEEE"
+alias ieee="cd ~/repos/PurdueRepos/IEEE"
 # ---------------------------------------------------------------------
 
 # --- ENGR13300 auto-venv setup ---------------------------------------------
 
 # 1) Set your course root and venv path
-export ENGR_ROOT="$HOME/Desktop/Purdue/Freshman_Year_2025_2026/ENGR13300"
+export ENGR_ROOT="$HOME/repos/PurdueRepos/Freshman_Year_2025_2026/ENGR13300"
 export ENGR_VENV="$ENGR_ROOT"           # e.g. "$ENGR_ROOT/venv" if you used `venv`
 
 # 2) Command: `engr133` -> cd to the folder and (optionally) activate venv
@@ -131,7 +131,7 @@ _engr_auto_venv
 # --- VIP auto-venv setup -----------------------------------------------------
 
 # 1) Set your project root and venv path
-export VIP_ROOT="$HOME/Desktop/Purdue/VIP"
+export VIP_ROOT="$HOME/repos/PurdueRepos/VIP"
 export VIP_VENV="$VIP_ROOT"           # e.g. "$VIP_ROOT/venv" if you used `venv`
 
 # 2) Command: `vip` -> cd to the folder and (optionally) activate venv
