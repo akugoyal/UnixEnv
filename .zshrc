@@ -172,3 +172,49 @@ add-zsh-hook chpwd _vip_auto_venv
 _vip_auto_venv
 # ---------------------------------------------------------------------------
 
+# --- ECE20875 auto-venv setup -----------------------------------------------------
+
+# 1) Set your project root and venv path
+export ECE20875_ROOT="$HOME/repos/PurdueRepos/ECE20875"
+export ECE20875_VENV="$ECE20875_ROOT"           # e.g. "$ECE20875_ROOT/venv" if you used `venv`
+
+# 2) Command: `ECE20875` -> cd to the folder and (optionally) activate venv
+ECE20875() {
+  cd "$ECE20875_ROOT" || return
+  if [[ "$VIRTUAL_ENV" != "$ECE20875_VENV" && -d "$ECE20875_VENV/bin" ]]; then
+    read -q "REPLY?Activate ECE20875 venv now? [y/N] " && echo
+    [[ "$REPLY" == [yY] ]] && source "$ECE20875_VENV/bin/activate"
+  fi
+}
+
+# 3) Auto-prompt on entering/leaving the project tree
+autoload -Uz add-zsh-hook
+
+_ECE20875_in_tree() {
+  [[ "$PWD" == "$ECE20875_ROOT" || "$PWD" == "$ECE20875_ROOT"/* ]]
+}
+
+_ECE20875_auto_venv() {
+  if _ECE20875_in_tree; then
+    if [[ "$VIRTUAL_ENV" != "$ECE20875_VENV" ]]; then
+      if [[ -d "$ECE20875_VENV/bin" ]]; then
+        read -q "REPLY?Activate ECE20875 venv? [y/N] " && echo
+        [[ "$REPLY" == [yY] ]] && source "$ECE20875_VENV/bin/activate"
+      else
+        echo "⚠️  ECE20875 venv not found at: $ECE20875_VENV  (create with: python3 -m venv \"$ECE20875_VENV\")"
+      fi
+    fi
+  else
+    if [[ "$VIRTUAL_ENV" == "$ECE20875_VENV" ]]; then
+      if whence -w deactivate >/dev/null 2>&1; then
+        read -q "REPLY?Deactivate ECE20875 venv? [y/N] " && echo
+        [[ "$REPLY" == [yY] ]] && deactivate
+      fi
+    fi
+  fi
+}
+
+add-zsh-hook chpwd _ECE20875_auto_venv
+_ECE20875_auto_venv
+# ---------------------------------------------------------------------------
+
