@@ -179,7 +179,7 @@ export ECE20875_ROOT="$HOME/repos/PurdueRepos/ECE20875"
 export ECE20875_VENV="$ECE20875_ROOT"           # e.g. "$ECE20875_ROOT/venv" if you used `venv`
 
 # 2) Command: `ECE20875` -> cd to the folder and (optionally) activate venv
-ECE20875() {
+ece20875() {
   cd "$ECE20875_ROOT" || return
   if [[ "$VIRTUAL_ENV" != "$ECE20875_VENV" && -d "$ECE20875_VENV/bin" ]]; then
     read -q "REPLY?Activate ECE20875 venv now? [y/N] " && echo
