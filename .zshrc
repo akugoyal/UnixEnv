@@ -48,7 +48,7 @@ autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:git:*' formats '%F{5}(%b)%f'
 precmd() { vcs_info }
-PROMPT='%B%F{2}%n%f %F{55}%~%f ${vcs_info_msg_0_}$%b '
+PROMPT='%B%F{2}%n%f %F{141}%~%f ${vcs_info_msg_0_}$%b '
 # ---------------------------------------------------------------------
 
 # --- Configure git completions ---------------------------------------
