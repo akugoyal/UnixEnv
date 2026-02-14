@@ -74,6 +74,9 @@ alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 alias loq="ssh akugy@akul-win-laptop"
 alias rpi="ssh akul@akuls-rpi4b"
 alias ieee="cd ~/repos/PurdueRepos/IEEE"
+alias alienware="ssh goyal186@172.30.72.197"
+alias alienware_admin="ssh goyal186_admin@172.30.72.197"
+alias jetson="ssh ieeeracing@172.28.161.76"
 # ---------------------------------------------------------------------
 
 # --- ENGR13300 auto-venv setup ---------------------------------------------
