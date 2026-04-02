@@ -132,7 +132,9 @@ _engr_auto_venv
 # --- VIP auto-venv setup -----------------------------------------------------
 
 # 1) Set your project root and venv path
-export VIP_ROOT="$HOME/repos/PurdueRepos/VIP"
+export VIP_PARENT="$HOME/repos/PurdueRepos/VIP"
+export VIP_PROJECT_SUBFOLDER="VIP_PathPlanning"
+export VIP_ROOT="$VIP_PARENT/$VIP_PROJECT_SUBFOLDER"
 export VIP_VENV="$VIP_ROOT"           # e.g. "$VIP_ROOT/venv" if you used `venv`
 
 # 2) Command: `vip` -> cd to the folder and (optionally) activate venv
