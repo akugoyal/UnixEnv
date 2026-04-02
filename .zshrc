@@ -133,17 +133,14 @@ _engr_auto_venv
 
 # 1) Set your project root and venv path
 export VIP_PARENT="$HOME/repos/PurdueRepos/VIP"
-export VIP_PROJECT_SUBFOLDER="VIP_PathPlanning"
-export VIP_ROOT="$VIP_PARENT/$VIP_PROJECT_SUBFOLDER"
-export VIP_VENV="$VIP_ROOT"           # e.g. "$VIP_ROOT/venv" if you used `venv`
+export VIP_PROJECT_SUBFOLDER="VIP_Satellites"
+export VIP_ROOT="${VIP_PARENT}/${VIP_PROJECT_SUBFOLDER}"
+export VIP_ROOT="${VIP_ROOT:A}"
+export VIP_VENV="${VIP_ROOT:A}"
 
 # 2) Command: `vip` -> cd to the folder and (optionally) activate venv
 vip() {
   cd "$VIP_ROOT" || return
-  if [[ "$VIRTUAL_ENV" != "$VIP_VENV" && -d "$VIP_VENV/bin" ]]; then
-    read -q "REPLY?Activate VIP venv now? [y/N] " && echo
-    [[ "$REPLY" == [yY] ]] && source "$VIP_VENV/bin/activate"
-  fi
 }
 
 # 3) Auto-prompt on entering/leaving the project tree
@@ -155,7 +152,7 @@ _vip_in_tree() {
 
 _vip_auto_venv() {
   if _vip_in_tree; then
-    if [[ "$VIRTUAL_ENV" != "$VIP_VENV" ]]; then
+    if [[ "${VIRTUAL_ENV:A}" != "${VIP_VENV:A}" ]]; then
       if [[ -d "$VIP_VENV/bin" ]]; then
         read -q "REPLY?Activate VIP venv? [y/N] " && echo
         [[ "$REPLY" == [yY] ]] && source "$VIP_VENV/bin/activate"
@@ -164,7 +161,7 @@ _vip_auto_venv() {
       fi
     fi
   else
-    if [[ "$VIRTUAL_ENV" == "$VIP_VENV" ]]; then
+    if [[ "${VIRTUAL_ENV:A}" == "${VIP_VENV:A}" ]]; then
       if whence -w deactivate >/dev/null 2>&1; then
         read -q "REPLY?Deactivate VIP venv? [y/N] " && echo
         [[ "$REPLY" == [yY] ]] && deactivate
@@ -186,10 +183,6 @@ export ECE20875_VENV="$ECE20875_ROOT"           # e.g. "$ECE20875_ROOT/venv" if 
 # 2) Command: `ECE20875` -> cd to the folder and (optionally) activate venv
 ece20875() {
   cd "$ECE20875_ROOT" || return
-  if [[ "$VIRTUAL_ENV" != "$ECE20875_VENV" && -d "$ECE20875_VENV/bin" ]]; then
-    read -q "REPLY?Activate ECE20875 venv now? [y/N] " && echo
-    [[ "$REPLY" == [yY] ]] && source "$ECE20875_VENV/bin/activate"
-  fi
 }
 
 # 3) Auto-prompt on entering/leaving the project tree
