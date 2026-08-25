@@ -67,7 +67,6 @@ export PATH="/usr/local/bin/tailscale:$PATH"
 
 # --- Aliases ---------------------------------------------------------
 alias cs159="cd ~/repos/PurdueRepos/CS15900/"
-alias ece270="cd ~/repos/PurdueRepos/ECE27000/student-labs"
 alias python="python3"
 alias pip="pip3"
 alias reload-zsh="source ~/.zshrc && echo 'zshrc reloaded'"
@@ -217,3 +216,50 @@ add-zsh-hook chpwd _ECE20875_auto_venv
 _ECE20875_auto_venv
 # ---------------------------------------------------------------------------
 
+# --- ECE27000 auto-venv setup ----------------------------------------------
+
+# Course root and venv
+export ECE270_ROOT="$HOME/repos/PurdueRepos/ECE27000"
+export ECE270_VENV="$ECE270_ROOT/.venv"
+
+# Command: `ece270` -> cd to the course repository
+ece270() {
+  cd "$ECE270_ROOT" || return
+}
+
+# Auto-prompt on entering/leaving the project tree
+autoload -Uz add-zsh-hook
+
+_ece270_in_tree() {
+  [[ "$PWD" == "$ECE270_ROOT" || "$PWD" == "$ECE270_ROOT"/* ]]
+}
+
+_ece270_auto_venv() {
+  if _ece270_in_tree; then
+    # Inside ECE27000: offer to activate its venv
+    if [[ "${VIRTUAL_ENV:A}" != "${ECE270_VENV:A}" ]]; then
+      if [[ -d "$ECE270_VENV/bin" ]]; then
+        read -q "REPLY?Activate ECE27000 venv? [y/N] " && echo
+        [[ "$REPLY" == [yY] ]] && source "$ECE270_VENV/bin/activate"
+      else
+        echo "⚠️  ECE27000 venv not found at: $ECE270_VENV"
+        echo "Create it with: python3 -m venv --prompt ECE27000 \"$ECE270_VENV\""
+      fi
+    fi
+  else
+    # Outside ECE27000: offer to deactivate its venv
+    if [[ -n "$VIRTUAL_ENV" && "${VIRTUAL_ENV:A}" == "${ECE270_VENV:A}" ]]; then
+      if whence -w deactivate >/dev/null 2>&1; then
+        read -q "REPLY?Deactivate ECE27000 venv? [y/N] " && echo
+        [[ "$REPLY" == [yY] ]] && deactivate
+      fi
+    fi
+  fi
+}
+
+add-zsh-hook chpwd _ece270_auto_venv
+
+# Handle shells opened while already inside ECE27000
+_ece270_auto_venv
+
+# ---------------------------------------------------------------------------
