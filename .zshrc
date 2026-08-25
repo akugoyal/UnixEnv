@@ -67,6 +67,7 @@ export PATH="/usr/local/bin/tailscale:$PATH"
 
 # --- Aliases ---------------------------------------------------------
 alias cs159="cd ~/repos/PurdueRepos/CS15900/"
+alias ece264="cd ~/repos/PurdueRepos/ECE26400/"
 alias python="python3"
 alias pip="pip3"
 alias reload-zsh="source ~/.zshrc && echo 'zshrc reloaded'"
