@@ -46,9 +46,29 @@ fi
 setopt prompt_subst
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable git
-zstyle ':vcs_info:git:*' formats '%F{5}(%b)%f'
-precmd() { vcs_info }
-PROMPT='%B%F{2}%n%f %F{141}%~%f ${vcs_info_msg_0_}$%b '
+zstyle ':vcs_info:git:*' formats '%F{5}(%b'
+
+_git_prompt_status() {
+  local line staged=false unstaged=false
+
+  _git_prompt_suffix=''
+  [[ -z "$vcs_info_msg_0_" ]] && return
+
+  while IFS= read -r line; do
+    # The two columns are the index (staged) and worktree (unstaged) states.
+    [[ "${line[1]}" != ' ' && "${line[1]}" != '?' ]] && staged=true
+    [[ "${line[2]}" != ' ' || "$line" == '??'* ]] && unstaged=true
+  done < <(git status --porcelain 2>/dev/null)
+
+  # Keep the requested order when both are present: (branch*+).
+  _git_prompt_suffix="$([[ $unstaged == true ]] && print '*')$([[ $staged == true ]] && print '+'))%f"
+}
+
+precmd() {
+  vcs_info
+  _git_prompt_status
+}
+PROMPT='%B%F{2}%n%f %F{141}%~%f ${vcs_info_msg_0_}${_git_prompt_suffix}$%b '
 # ---------------------------------------------------------------------
 
 # --- Configure git completions ---------------------------------------
