@@ -61,7 +61,7 @@ _git_prompt_status() {
   done < <(git status --porcelain 2>/dev/null)
 
   # Keep the requested order when both are present: (branch*+).
-  _git_prompt_suffix="$([[ $unstaged == true ]] && print '﹡')$([[ $unstaged == true && $staged == true ]] && print '|')$([[ $staged == true ]] && print '+'))%f"
+  _git_prompt_suffix="$([[ $unstaged == true ]] && print '*')$([[ $unstaged == true && $staged == true ]] && print '|')$([[ $staged == true ]] && print '+'))%f"
 }
 
 precmd() {
